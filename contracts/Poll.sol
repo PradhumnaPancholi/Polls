@@ -13,12 +13,18 @@ contract Poll{
     mapping(uint => Contestant) public contestants;
 
     //varialble to keep track of number of contestants - because of the way solidity work//
-    uint public contestantCount;
+    uint public contestantsCount;
+
+    //contructor for a Poll with contestants//
+    constructor () public {
+        addNewContestant('FRIENDS', 'Comedy');
+        addNewContestant('HIMYM', 'Comedy');
+    }
 
     //function to add a contestant//
     function addNewContestant (string memory _name, string memory _genre) private {
         //increament the value of contestantCount//
-        contestantCount  ++;
-        contestants[contestantCount] = Contestant(contestantCount, _name, _genre, 0);
+        contestantsCount  ++;
+        contestants[contestantsCount] = Contestant(contestantsCount, _name, _genre, 0);
     }
 }
