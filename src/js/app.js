@@ -1,63 +1,96 @@
 App = {
   web3Provider: null,
   contracts: {},
+  account: 0x0,
 
-  init: async function() {
-    // Load pets.
-    $.getJSON('../pets.json', function(data) {
-      var petsRow = $('#petsRow');
-      var petTemplate = $('#petTemplate');
-
-      for (i = 0; i < data.length; i ++) {
-        petTemplate.find('.panel-title').text(data[i].name);
-        petTemplate.find('img').attr('src', data[i].picture);
-        petTemplate.find('.pet-breed').text(data[i].breed);
-        petTemplate.find('.pet-age').text(data[i].age);
-        petTemplate.find('.pet-location').text(data[i].location);
-        petTemplate.find('.btn-adopt').attr('data-id', data[i].id);
-
-        petsRow.append(petTemplate.html());
-      }
-    });
+  init: async () => {
 
     return await App.initWeb3();
   },
 
-  initWeb3: async function() {
-    /*
-     * Replace me...
-     */
+  //this func manages web3 provider//
+  initWeb3: async () => {
+    
+    if(typeof web3 === 'undefined') {
+      //initiate and set web3 provider//
+      App.web3Provider = web3.currentProvider
+      const web3 = new Web3(web3.currentProvider)
+    }else{
+      //if no provider available, connect with local network//
+      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545')
+      web3 = new Web3(App.web3Provider)
+    }
 
     return App.initContract();
   },
 
-  initContract: function() {
-    /*
-     * Replace me...
-     */
+  //this func intiates and connects with the smart contracts living on the blockchain network//
+  initContract: () => {
+    $.getJSON('Poll.json',(poll) => {
+      App.contracts.Poll = TruffleContract(poll)
+      App.contracts.Poll.setProvider(App.web3Provider)
+      return App.renderData();
+    })
 
-    return App.bindEvents();
+    // return App.renderData();
   },
 
-  bindEvents: function() {
-    $(document).on('click', '.btn-adopt', App.handleAdopt);
-  },
+  //this func renders data to display for client side//
+  renderData: () => {
+    let pollInstance
+    let loader = $('#loader')
+    let content = $('.content')
 
-  markAdopted: function(adopters, account) {
-    /*
-     * Replace me...
-     */
-  },
+    //while data is being fetched//
+    loader.show()
+    content.hide()
 
-  handleAdopt: function(event) {
-    event.preventDefault();
+    //fetch account data via wallet //
+    web3.eth.getCoinbase((err, account) => {
+      if(err == null){
+        App.account = account
+        console.log(account)
+      }else{
+        console.warn(err)
+      }
+    })
 
-    var petId = parseInt($(event.target).data('id'));
+    //load contract data on client browwser
 
-    /*
-     * Replace me...
-     */
+    // 1. create a poll instance once it's deployed
+    App.contracts.Poll.deployed().then((instance) => {
+      pollInstance = instance
+    // 2. get number of contestants
+      return pollInstance.contestantsCount()
+    }).then((contestantsCount) => {
+    // 3. get table-data result element and dump the data in it.
+        let contestantsData = $('.table-data')
+        contestantsData.empty()
+
+    //4. Run a loop on data from contracts //
+        for(i=1; i<=contestantsCount; i++){
+          pollInstance.contestants(i).then((contestant) => {
+            //prepare data//
+            let id = contestant[0]
+            let name = contestant[1]
+            let votes = contestant[2]
+
+    //5. Create templelate for table row and append data//
+            let contestantDataTemplate = '<tr><th>' + id + '</th><td>' + name + '</td><td>' + votes + '</td></tr>'
+            contestantsData.append(contestantDataTemplate)
+          })
+        }
+
+        //hide loader and display table data//
+        loader.hide()
+        content.show()
+
+    //just a basic catch for errors//
+    }).catch((err) => {
+      console.warn(err)
+    })
   }
+  
 
 };
 
