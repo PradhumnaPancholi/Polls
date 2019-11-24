@@ -49,7 +49,7 @@ App = {
     web3.eth.getCoinbase((err, account) => {
       if(err == null){
         App.account = account
-        console.log(account)
+        console.log(`Your account: ${account}`)
       }else{
         console.warn(err)
       }
@@ -73,10 +73,11 @@ App = {
             //prepare data//
             let id = contestant[0]
             let name = contestant[1]
-            let votes = contestant[2]
+            let genre = contestant[2]
+            let votes = contestant[3]
 
     //5. Create templelate for table row and append data//
-            let contestantDataTemplate = '<tr><th>' + id + '</th><td>' + name + '</td><td>' + votes + '</td></tr>'
+            let contestantDataTemplate = '<tr><th>' + id + '</th><td>' + name + '</td><td>' + genre + '</td><td>' + votes + '</td></tr>'
             contestantsData.append(contestantDataTemplate)
           })
         }
