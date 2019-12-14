@@ -12,6 +12,9 @@ contract Poll{
     //mapping to fetch contestant details//
     mapping(uint => Contestant) public contestants;
 
+    //list to hold a list of voters//
+    mapping(address => bool) public votersList;
+
     //varialble to keep track of number of contestants - because of the way solidity work//
     uint public contestantsCount;
 
@@ -32,5 +35,6 @@ contract Poll{
     function castVote(uint _contestantId) public {
         //add vote count for the contestant//
         contestants[_contestantId].votes ++;
+        votersList[msg.sender] = true;
     }
 }

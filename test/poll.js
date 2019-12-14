@@ -33,7 +33,18 @@ contract('Poll', (accounts) => {
         })
     })
     // 3. Test for basic  voting mechanism//
-    if('Verifies that the vote is added', () => {
-        
+    it('Verifies that the vote is added', () => {
+        return Poll.deployed().then((instance) => {
+            pollInstance = instance
+            contestantId = 1
+            return pollInstance.castVote(contestantId)
+        }).then((receipt) => {
+            return pollInstance.contestants(contestantId)
+        }).then((contestant) => {
+            votes = contestant[3]
+            //this test logic isn't dynamic - means written to run against empty blockchain//
+            assert.equal(votes, 1, 'Added vote for the contestant')
+        })
+            
     })
 })
