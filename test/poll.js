@@ -47,4 +47,16 @@ contract('Poll', (accounts) => {
         })
             
     })
+    // 4. test for checking if user was added to votersList//
+    it('Verifies that user was added to votersList with true value', () => {
+        return Poll.deployed().then((instance) => {
+            pollInstance = instance
+            constestantId = 1
+            return pollInstance.castVote(1, {from: accounts[0]})
+        }).then((receipt) => {
+            return pollInstance.votersList(accounts[0])
+        }).then((voted) => {
+            assert(voted, 'The voter was added to votersList')
+        })
+    }) 
 })
