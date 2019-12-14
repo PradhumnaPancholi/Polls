@@ -32,4 +32,8 @@ contract('Poll', (accounts) => {
             assert.equal(contestant[2], 'Comedy', 'Genre is correct')
         })
     })
+    // 3. Test for basic  voting mechanism//
+    if('Verifies that the vote is added', () => {
+        
+    })
 })

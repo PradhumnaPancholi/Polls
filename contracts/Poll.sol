@@ -27,4 +27,10 @@ contract Poll{
         contestantsCount  ++;
         contestants[contestantsCount] = Contestant(contestantsCount, _name, _genre, 0);
     }
+
+    //function to cast vote to a contestant and follow up with voetrs data//
+    function castVote(uint _contestantId) public {
+        //add vote count for the contestant//
+        contestants[_contestantId].votes ++;
+    }
 }
