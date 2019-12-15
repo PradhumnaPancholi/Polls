@@ -97,6 +97,19 @@ App = {
     }).catch((err) => {
       console.warn(err)
     })
+  }, 
+
+  // function to cast vote
+  castVote: () => {
+    let contestantId = $('.select-control').val()
+    //send data to smart contract for voting//
+    App.contracts.Poll.deployed().then((instance) => {
+      return instance.castVote(contestantId, {from: App.account})
+    }).then((response) => {
+
+    }).catch((err) => {
+      console.log(err)
+    })
   }
   
 
