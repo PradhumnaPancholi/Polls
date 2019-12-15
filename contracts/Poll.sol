@@ -33,8 +33,14 @@ contract Poll{
 
     //function to cast vote to a contestant and follow up with voetrs data//
     function castVote(uint _contestantId) public {
+    // filter to block single user for multiple times //
+        //user is not present in votersList
+        require(!votersList[msg.sender], 'User has already voted');
+        //check id it's a valid contestant//
+        require(_contestantId > 0 && _contestantId <= contestantsCount, 'Not a valid contestant');
         //add vote count for the contestant//
         contestants[_contestantId].votes ++;
+        //adding user to votersList//
         votersList[msg.sender] = true;
     }
 }
