@@ -63,9 +63,12 @@ App = {
     // 2. get number of contestants
       return pollInstance.contestantsCount()
     }).then((contestantsCount) => {
-    // 3. get table-data result element and dump the data in it.
+    // 3. get table-data result element and dump all the data in it.
         let contestantsData = $('.table-data')
         contestantsData.empty()
+        // 3a. get the select e4lement and dump all the data in it.
+        let contestantSelect = $('.select-control')
+        contestantSelect.empty()
 
     //4. Run a loop on data from contracts //
         for(i=1; i<=contestantsCount; i++){
@@ -79,6 +82,10 @@ App = {
     //5. Create templelate for table row and append data//
             let contestantDataTemplate = '<tr><th>' + id + '</th><td>' + name + '</td><td>' + genre + '</td><td>' + votes + '</td></tr>'
             contestantsData.append(contestantDataTemplate)
+
+            // 5a. create a template for options in select to render//
+            let contestantSelectOption = '<option value=" '+ id +' " ' + '>' + name +'</option>'
+            contestantSelect.append(contestantSelectOption)
           })
         }
 
